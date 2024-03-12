@@ -1,0 +1,47 @@
+{
+    "name": "Dictionary side panel",
+    "version": "0.1",
+    "manifest_version": 3,
+    "description": "Provides definitions in the side panel.",
+    "background": {
+        "service_worker": "event-page.js",
+        "type": "module"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "sidebar",
+        "default_icon": {
+            "128": "images/icon128.png",
+            "16": "images/icon16.png",
+            "48": "images/icon48.png"
+        }
+    },
+    "side_panel": {
+        "default_path": "sidepanel.html"
+    },
+    "options_page": "options.html",
+    "permissions": [
+        "sidePanel",
+        "contextMenus",
+        "storage",
+        "scripting",
+        "tabs",
+        "downloads",
+        "fontSettings"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*/*",
+                "http://*/*"
+            ],
+            "js": [
+                "jquery.js",
+                "context.js"
+            ],
+            "css": [
+                "styles.css"
+            ]
+        }
+    ]
+}
