@@ -6,12 +6,7 @@
   border: 1px solid hsl(0, 0%, 40%);
   border-radius: 10px 10px 10px 10px;
 }
-img.logo {
-  width: 90px;
-  height: 90px;
-  border-radius: 15px 15px 15px 15px;
-  box-shadow: 1px 1px 12px 2px darkgrey, -1px -1px 12px 2px darkgrey;
-  margin-inline: 1rem;
+body {
 }
 p {
 }
@@ -30,4 +25,10 @@ h6 {
 article {
 }
 section {
+}
+div {
+}
+span {
+}
+small {
 }

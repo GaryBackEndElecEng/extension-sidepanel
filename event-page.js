@@ -1,6 +1,6 @@
 const menuitem = {
   id: "define_",
-  title: "Define",
+  title: "Master Dict + ",
   contexts: ["selection"],
 };
 chrome.runtime.onInstalled.addListener(() => {

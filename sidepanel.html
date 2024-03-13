@@ -1,55 +1,110 @@
 <html>
-  <head>
-    <title>Dictionary Side Panel</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" src="./styles.css">
-    <script src="./jquery.js"></script>
-    
-  </head>
-  <body>
-    <h1>Dictionary</h1>
-    <hr />
-    
-    <p id="select-a-word">Select a word to see the definition or save a paragraph,email.</p>
-    <div class="d-flex flex-column justify-content-start align-items-center gap-2" id="showTime">
-      <div class="m-auto">
-        <h2>selection</h2>
-        <div id="sidelist"></div>
-      </div>
-      <div class="d-flex flex-column align-items-center gap-2">
-        <button id="clearMemory" class="px-3 py-1 rounded btn btn-warning btn-sm"> clear memory</button>
-        <button id="saveCsv" class="px-3 py-1 rounded btn btn-success btn-sm"> save csv</button>
-      </div>
-      <h6 class="display-6 lean text-center"> add delete per selection / you don't need checkbox for upload, then uload extension to chrome</h6>
+
+<head>
+  <title>Dictionary Side Panel</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" src="./styles.css">
+  <script src="./jquery.js"></script>
+<style>
+  img.logo {
+  width: 90px;
+  height: 90px;
+  border-radius: 15px 15px 15px 15px;
+  box-shadow: 1px 1px 12px 2px darkgrey, -1px -1px 12px 2px darkgrey;
+  margin-inline: 1rem;
+  background:black;
+}
+body{
+  font-family:"Roboto serif";
+}
+</style>
+</head>
+
+<body>
+  <div class="d-flex justify-content-between align-items-center my-auto mx-1 px-1">
+    <img src="./images/icon128.png" alt="www.masterconnect.ca" class="logo"/>
+    <div class="d-flex flex-column gap-1 justify-content-center align-items-center">
+      <h1 class="text-center display-3 lean">Dictionary</h1>
+      <h6 class="display-6 lean">masterconnect.ca</h6>
     </div>
-    <div class="d-flex flex-column justify-content-center align-items-center mt-10">
-      <div id="containerSelect"
-          class="m-auto d-flex flex-row flex-wrap justify-content-start align-items-center gap-1">
-
-          <select name="fontFamily" value="fontFamily" id="fontFamily"
-              class="m-auto d-flex flex-column justify-content-center align-items-center gap-2">
-
-          </select>
-          <select name="scripts" value="scripts" id="scripts"
-              class="m-auto d-flex flex-column justify-content-center align-items-center gap-2">
-
-          </select>
-          <select name="font" value="font" id="fontList"
-              class="m-auto d-flex flex-column justify-content-center align-items-center gap-2">
-              <option disabled value="select" class="m-auto">select</option>
-          </select>
-
-      </div>
-      <h6 id="fontSelected"></h6>
-      <div class="d-flex flex-colummn gap-2 my-1 align-items-center justify-content-center mb-2">
-
-          <button id="setFont" class="btn btn-primary rounded px-2 py-1 btn-sm rounded shadow">setFont</button>
-      </div>
-      
   </div>
-   
-  </body>
-  
-    <script src="./sidepanel.js"></script>
+  <hr />
+
+  <p id="select-a-word" class="text-center lean">Select a word to see the definition or save a paragraph,email.</p>
+  <div class="d-flex flex-column justify-content-start align-items-center gap-2" id="showTime">
+    <div class="m-auto">
+      <h2>selection</h2>
+      <div id="sidelist"></div>
+    </div>
+    <div class="d-flex flex-column align-items-center gap-2">
+      <button id="clearMemory" class="px-3 py-1 rounded btn btn-warning btn-sm"> clear memory</button>
+      <button id="saveCsv" class="px-3 py-1 rounded btn btn-success btn-sm"> save csv</button>
+    </div>
+    <h6 class="display-6 lean text-center"> add styles</h6>
+  </div>
+  <div class="d-flex flex-column justify-content-center align-items-center mt-10 shadow rounded gap-2 px-2">
+    <div id="containerSelect" class="m-auto d-flex flex-row flex-wrap justify-content-center align-items-center gap-1 border">
+      <div class="form-group text-center">
+        <label for="target"> Element</label>
+        <select name="target" value="target" id="target"
+          class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
+
+        </select>
+      </div>
+      <div class="form-group text-center">
+        <label for="color"> T.color</label>
+        <select name="color" value="color" id="color"
+          class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
+
+        </select>
+      </div>
+      <div class="form-group text-center">
+        <label for="bg_color"> background</label>
+        <select name="bg_color" value="bg_color" id="bg_color"
+          class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
+
+        </select>
+      </div>
+      <div class="form-group text-center">
+        <label for="className"> add class</label>
+        <select name="className" value="className" id="className"
+          class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
+
+        </select>
+      </div>
+      <div class="form-group text-center">
+        <label for="fontFamily">add style</label>
+        <select name="fontFamily" value="fontFamily" id="fontFamily"
+          class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
+
+        </select>
+      </div>
+      <div class="form-group text-center">
+        <label for="scripts">lang. type</label>
+        <select name="scripts" value="scripts" id="scripts"
+          class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
+        </select>
+      </div>
+      <div class="form-group text-center">
+        <label for="fontList">f.family</label>
+        <select name="font" value="font" id="fontList"
+          class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
+          <option disabled value="select" class="m-auto">select</option>
+        </select>
+      </div>
+
+    </div>
+    
+    <div class="d-flex flex-colummn gap-2 my-1 align-items-center justify-content-center mb-2">
+
+      <button id="setFont" class="btn btn-primary rounded px-2 py-1 btn-sm rounded shadow">setFont</button>
+    </div>
+
+  </div>
+
+</body>
+
+<script src="./sidepanel.js"></script>
+
 </html>
