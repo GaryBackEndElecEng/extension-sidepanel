@@ -1,8 +1,8 @@
 chrome.runtime.onMessage.addListener((request, sender, res) => {
   if (request.task == "changeFontFamily") {
     const fontFamily = {
-      fontId: request.fontFamily.fontId,
-      genericFamily: request.fontFamily.genericFamily,
+      fontFamily: request.fontFamily.fontFamily,
+      fontStyle: request.fontFamily.fontStyle,
       target: request.fontFamily.target,
       color: request.fontFamily.color,
       bg_color: request.fontFamily.bg_color,
@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener((request, sender, res) => {
     };
     console.log("fontFamily", fontFamily);
     const target = fontFamily.target;
-    const insert = `${fontFamily.fontId}, ${fontFamily.genericFamily}`;
+    const insert = `${fontFamily.fontFamily}, ${fontFamily.fontStyle}`;
     // console.log("context recieved", insert);
     $(target).css("fontFamily", insert);
     $(target).css("color", fontFamily.color);

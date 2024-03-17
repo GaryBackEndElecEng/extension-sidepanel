@@ -222,7 +222,14 @@ function showTime(dateTime) {
 }
 
 $(document).ready(function () {
-  const genericFamilys = [
+  $("#openSidebar").click((e) => {
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+      chrome.sidePanel.open({ tabId: tabs[0].id });
+    });
+  });
+});
+class FontClass {
+  fontStyles = [
     "standard",
     "sansserif",
     "serif",
@@ -231,312 +238,65 @@ $(document).ready(function () {
     "fantasy",
     "math",
   ];
-  const scripts_ = [
-    "Afak",
-
-    "Arab",
-
-    "Armi",
-
-    "Armn",
-
-    "Avst",
-
-    "Bali",
-
-    "Bamu",
-
-    "Bass",
-
-    "Batk",
-
-    "Beng",
-
-    "Blis",
-
-    "Bopo",
-
-    "Brah",
-
-    "Brai",
-
-    "Bugi",
-
-    "Buhd",
-
-    "Cakm",
-
-    "Cans",
-
-    "Cari",
-
-    "Cham",
-
-    "Cher",
-
-    "Cirt",
-
-    "Copt",
-
-    "Cprt",
-
-    "Cyrl",
-
-    "Cyrs",
-
-    "Deva",
-
-    "Dsrt",
-
-    "Dupl",
-
-    "Egyd",
-
-    "Egyh",
-
-    "Egyp",
-
-    "Elba",
-
-    "Ethi",
-
-    "Geor",
-
-    "Geok",
-
-    "Glag",
-
-    "Goth",
-
-    "Gran",
-
-    "Grek",
-
-    "Gujr",
-
-    "Guru",
-
-    "Hang",
-
-    "Hani",
-
-    "Hano",
-
-    "Hans",
-
-    "Hant",
-
-    "Hebr",
-
-    "Hluw",
-
-    "Hmng",
-
-    "Hung",
-
-    "Inds",
-
-    "Ital",
-
-    "Java",
-
-    "Jpan",
-
-    "Jurc",
-
-    "Kali",
-
-    "Khar",
-
-    "Khmr",
-
-    "Khoj",
-
-    "Knda",
-
-    "Kpel",
-
-    "Kthi",
-
-    "Lana",
-
-    "Laoo",
-
-    "Latf",
-
-    "Latg",
-
-    "Latn",
-
-    "Lepc",
-
-    "Limb",
-
-    "Lina",
-
-    "Linb",
-
-    "Lisu",
-
-    "Loma",
-
-    "Lyci",
-
-    "Lydi",
-
-    "Mand",
-
-    "Mani",
-
-    "Maya",
-
-    "Mend",
-
-    "Merc",
-
-    "Mero",
-
-    "Mlym",
-
-    "Moon",
-
-    "Mong",
-
-    "Mroo",
-
-    "Mtei",
-
-    "Mymr",
-
-    "Narb",
-
-    "Nbat",
-
-    "Nkgb",
-
-    "Nkoo",
-
-    "Nshu",
-
-    "Ogam",
-
-    "Olck",
-
-    "Orkh",
-
-    "Orya",
-
-    "Osma",
-
-    "Palm",
-
-    "Perm",
-
-    "Phag",
-
-    "Phli",
-
-    "Phlp",
-
-    "Phlv",
-
-    "Phnx",
-
-    "Plrd",
-
-    "Prti",
-
-    "Rjng",
-
-    "Roro",
-
-    "Runr",
-
-    "Samr",
-
-    "Sara",
-
-    "Sarb",
-
-    "Saur",
-
-    "Sgnw",
-
-    "Shaw",
-
-    "Shrd",
-
-    "Sind",
-
-    "Sinh",
-
-    "Sora",
-
-    "Sund",
-
-    "Sylo",
-
-    "Syrc",
-
-    "Syre",
-
-    "Syrj",
-
-    "Syrn",
-
-    "Tagb",
-
-    "Takr",
-
-    "Tale",
-
-    "Talu",
-
-    "Taml",
-
-    "Tang",
-
-    "Tavt",
-
-    "Telu",
-
-    "Teng",
-
-    "Tfng",
-
-    "Tglg",
-
-    "Thaa",
-
-    "Thai",
-
-    "Tibt",
-
-    "Tirh",
-
-    "Ugar",
-
-    "Vaii",
-
-    "Visp",
-
-    "Wara",
-
-    "Wole",
-
-    "Xpeo",
-
-    "Xsux",
-
-    "Yiii",
-
-    "Zmth",
-
-    "Zsym",
-
-    "Zyyy",
+  targetArr = [
+    "p",
+    "li",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "div",
+    "img",
+    "section",
+    "article",
+    "span",
+    "small",
+    "body",
+  ];
+
+  classNames = [
+    {
+      key: "remove",
+      value: [
+        { boxShadow: "" },
+        { boxShadow: "" },
+        { borderRadius: "" },
+        { margin: "auto" },
+        { padding: "auto" },
+        { border: "" },
+      ],
+      key: "shadow",
+      value: [
+        { boxShadow: "1px 1px 12 3px rgb(1, 153, 176)" },
+        { boxShadow: "-1px -1px 12 3px rgb(1, 183, 176)" },
+        { borderRadius: "10px 10px 10px 10px" },
+        { margin: "0.25rem" },
+        { padding: "0.5rem" },
+      ],
+    },
+    {
+      key: "border",
+      value: [
+        { border: "1px solid grey" },
+        { borderRadius: "10px 10px 10px 10px" },
+        { margin: "0.25rem" },
+        { padding: "0.5rem" },
+      ],
+    },
+    {
+      key: "avatar",
+      value: [
+        { border: "1px solid grey" },
+        { borderRadius: "50%" },
+        { padding: "0.5rem" },
+        { filter: "0 0 0.75rem crimson" },
+      ],
+    },
   ];
   colors = [
+    "black",
     "darkgrey",
     "lightgrey",
     "blue",
@@ -545,9 +305,9 @@ $(document).ready(function () {
     "orange",
     "violet",
     "white",
-    "black",
   ];
   bg_colors = [
+    "white",
     "darkgrey",
     "black",
     "slategray",
@@ -559,236 +319,221 @@ $(document).ready(function () {
     "darkorange",
     "violet",
     "darkviolet",
-    "white",
   ];
-  const targetArr = [
-    "p",
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "h6",
-    "div",
-    "section",
-    "article",
-    "span",
-    "small",
-    "body",
-  ];
-  const classNames = [
-    {
-      key: "shadow",
-      value: [
-        { "box-shadow": "1px 1px 12 3px rgb(1, 153, 176)" },
-        { "box-shadow": "-1px -1px 12 3px rgb(1, 183, 176)" },
-        { "border-radius": "10px 10px 10px 10px" },
-        { margin: "0.25rem" },
-        { padding: "0.5rem" },
-      ],
-    },
-    {
-      key: "border",
-      value: [
-        { border: "1px solid grey" },
-        { "border-radius": "10px 10px 10px 10px" },
-        { margin: "0.25rem" },
-        { padding: "0.5rem" },
-      ],
-    },
-  ];
+  phrase =
+    "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cum deleniti labore perferendis dolores. Suscipit corporis, magni excepturi, voluptates delectus quasi optio perspiciatis eveniet veritatis quae minus magnam fuga ducimus soluta fugiat impedit illo hic molestias aperiam debitis dolore aliquid vitae quibusdam. Exercitationem tempora deleniti possimus quos natus cupiditate, dolores aliquid.";
+  isShowing = false;
 
-  $("#openSidebar").click((e) => {
-    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-      chrome.sidePanel.open({ tabId: tabs[0].id });
+  constructor() {
+    this.classFamily = document.getElementById("classFamily");
+    this.classStyle = document.getElementById("classStyle");
+    this.divs = document.querySelectorAll("div");
+    this.setFont = document.getElementById("setFont");
+    this.options = document.querySelectorAll(".option");
+    this.targetEle = document.querySelector("select#target");
+    this.targetClassName = document.querySelector("select#className");
+    this.targetColor = document.querySelector("select#color");
+    this.targetBgColor = document.querySelector("select#bg_color");
+    this.sampleFont = document.getElementById("sampleFont");
+    this.checkSampleFont = document.getElementById("checkSampleFont");
+    this.selItem = {
+      fontStyle: this.classStyle.value,
+      fontFamily: this.classFamily.value,
+      target: this.targetEle.value,
+      color: this.targetColor.value,
+      bg_color: this.targetBgColor.value,
+      className: this.targetClassName.value,
+    };
+  }
+
+  create_build_Options() {
+    chrome.fontSettings.getFontList().then((fontFamily) => {
+      let familyList = fontFamily.map((font) => font);
+      this.buildOptions(familyList);
+      this.buildTarget();
+      this.selectFontFamily();
+      this.sendTarget();
+      this.sample_font();
     });
-  });
-  selectFont();
+  }
 
-  function selectFont() {
-    //target element
-    if (targetArr.length > 0) {
-      targetArr.forEach((targ, index) => {
+  buildOptions(familyList) {
+    if (familyList.length > 0) {
+      familyList.forEach((font, index) => {
+        const option_fam = document.createElement("option");
+        option_fam.type = "text";
+        option_fam.value = font.fontId;
+        option_fam.innerHTML = font.fontId;
+        option_fam.className = "text-sm lean fontItem text-center";
+        this.classFamily.appendChild(option_fam);
+      });
+    }
+    if (this.fontStyles && this.fontStyles.length) {
+      this.fontStyles.forEach((style, index) => {
+        const option_style = document.createElement("option");
+        option_style.type = "text";
+        option_style.value = style;
+        option_style.innerHTML = style;
+        option_style.className = "text-sm lean fontItem text-center";
+        this.classStyle.appendChild(option_style);
+      });
+    }
+  }
+
+  selectFontFamily() {
+    this.selItem.fontFamily = this.classFamily.value;
+    this.selItem.fontStyle = this.classStyle.value;
+    this.setFont.addEventListener("click", (e) => {
+      if (e) {
+        this.selItem = {
+          fontFamily: this.classFamily.value,
+          fontStyle: this.classStyle.value,
+        };
+        this.divs.forEach((div) => {
+          const check = div.querySelector("aside") ? true : false;
+
+          if (!check) {
+            div.style.fontFamily = `${this.selItem.fontFamily}, ${this.selItem.fontStyle}`;
+          } else {
+            div.querySelector("aside").style.fontFamily = "Century, cursive";
+          }
+        });
+      }
+    });
+  }
+  buildTarget() {
+    //Target element
+    if (this.targetArr.length > 0) {
+      this.targetArr.forEach((targ, index) => {
         const target = document.createElement("option");
         target.type = "text";
         target.value = targ;
         target.innerHTML = targ;
         target.className = "text-sm lean fontItem text-center border";
-        $("select#target").append(target);
+        this.targetEle.appendChild(target);
       });
     }
-    if (classNames.length > 0) {
-      classNames.forEach((class_, index) => {
+    if (this.classNames.length > 0) {
+      this.classNames.forEach((class_, index) => {
         const classOption = document.createElement("option");
         classOption.type = "text";
         classOption.value = JSON.stringify(class_.value);
         classOption.innerHTML = class_.key;
         classOption.className = "text-sm lean fontItem text-center border";
-        $("select#className").append(classOption);
+        this.targetClassName.appendChild(classOption);
       });
     }
-    if (colors.length > 0) {
-      colors.forEach((color, index) => {
+    if (this.colors.length > 0) {
+      this.colors.forEach((color, index) => {
         const colorOption = document.createElement("option");
         colorOption.type = "text";
         colorOption.value = color;
         colorOption.innerHTML = color;
         colorOption.className = "text-sm lean fontItem text-center border";
-        $("select#color").append(colorOption);
+        this.targetColor.appendChild(colorOption);
       });
     }
-    if (bg_colors.length > 0) {
-      bg_colors.forEach((bgcolor, index) => {
+    if (this.bg_colors.length > 0) {
+      this.bg_colors.forEach((bgcolor, index) => {
         const bg_colorOption = document.createElement("option");
         bg_colorOption.type = "text";
         bg_colorOption.value = bgcolor;
         bg_colorOption.innerHTML = bgcolor;
         bg_colorOption.className = "text-sm lean fontItem text-center border";
-        $("select#bg_color").append(bg_colorOption);
+        this.targetBgColor.appendChild(bg_colorOption);
       });
     }
-    chrome.fontSettings.getFontList().then((fontList) => {
-      //gen options for select#fontList ( font Family)
-      if (fontList.length > 0) {
-        fontList.forEach((font, index) => {
-          const option_fam = document.createElement("option");
-          option_fam.type = "text";
-          option_fam.value = font.fontId;
-          option_fam.innerHTML = font.fontId;
-          option_fam.className = "text-sm lean fontItem text-center";
-          $("#fontList").append(option_fam);
-        });
-        $("#fontList").type = "text";
-        //genericFamilys, above list for GenericFamily ( font Style) for chrome.fontSettings.getFont()
-        genericFamilys.forEach((generic, index) => {
-          const styleOption = document.createElement("option");
-          styleOption.value = generic;
-          styleOption.innerHTML = generic;
-          styleOption.className = "text-sm lean fontItem text-center";
-          $("#fontFamily").append(styleOption);
-        });
-        //Script for languages
-        scripts_.forEach((scr, index) => {
-          const langOption = document.createElement("option");
-          langOption.value = scr;
-          langOption.innerHTML = scr;
-          langOption.className = "text-sm lean fontItem text-center";
-          $("#scripts").append(langOption);
-        });
-        get_target_font();
-      }
-    });
   }
-  function get_target_font() {
-    let selItem = {
-      genericFamily: "standard",
-      script: "Arab",
-      fontId: "Century",
-      target: "body",
-      color: "black",
-      bg_color: "white",
-      className: "",
+  sendTarget() {
+    this.selItem = {
+      fontStyle: this.classStyle.value,
+      fontFamily: this.classFamily.value,
+      target: this.targetEle.value,
+      color: this.targetColor.value,
+      bg_color: this.targetBgColor.value,
+      className: this.targetClassName.value,
     };
-    $("select#className").on("change paste", (e) => {
-      //getting selection
-      const class_ = $("select#className").val();
-      selItem.className = class_;
-    });
-    $("select#color").on("change paste", (e) => {
-      //getting selection
-      const col = $("select#color").val();
-      selItem.color = col;
-    });
-    $("select#bg_color").on("change paste", (e) => {
-      //getting selection
-      const bg_col = $("select#bg_color").val();
-      selItem.bg_color = bg_col;
-    });
-    $("#target").on("change paste", (e) => {
-      //getting selection
-      const targ = $("#target").val();
-      selItem.target = targ;
-    });
-    $("#fontList").on("change paste", (e) => {
-      //getting selection
-      const selVal = $("#fontList").val();
-      selItem.fontId = selVal;
-    });
-    $("#fontFamily").on("change paste", (e) => {
-      //getting selection
-      const selVal = $("#fontFamily").val();
-      selItem.genericFamily = selVal;
-    });
-    $("#scripts").on("change paste", (e) => {
-      //getting
-      const selVal = $("#scripts").val();
-      if (selVal) {
-        selItem.script = selVal;
-      } else {
-        selItem.script = "Arab";
-      }
-    });
-    $("#fontList").on("change paste", (e) => {
-      //getting fontId
-      selItem.fontId = $("#fontList").val();
-    });
-
-    $("#fontSelected").text(JSON.stringify(selItem));
-    $("button#setFont").click((e) => {
-      const check = set_get_font(selItem);
-      if (check) {
-        // selItem = {
-        //   genericFamily: "standard",
-        //   script: "Arab",
-        //   fontId: "Century",
-        //   target: "body",
-        //   color: "black",
-        //   bg_color: "white",
-        //   className: "",
-        // };
-      }
-    });
-  }
-
-  function set_get_font(selItem) {
-    let changed = false;
-    let selItem_font = {
-      genericFamily: selItem.genericFamily,
-      script: selItem.script,
-      fontId: selItem.fontId,
-    };
-    const check =
-      selItem.genericFamily && selItem.script && selItem.fontId ? true : false;
-
-    if (check) {
-      $("#fontSelected").text(JSON.stringify(selItem_font));
-      chrome.fontSettings.setFont(selItem_font).then((res) => {});
-      const getItem = {
-        genericFamily: selItem.genericFamily,
-        script: selItem.script,
-      };
-      chrome.fontSettings.getFont(getItem).then((res) => {
+    this.setFont.addEventListener("click", (e) => {
+      if (e) {
         chrome.tabs
           .query({ active: true, currentWindow: true })
           .then((tabs) => {
             chrome.tabs.sendMessage(tabs[0].id, {
               task: "changeFontFamily",
               fontFamily: {
-                fontId: selItem.fontId,
-                genericFamily: selItem.genericFamily,
-                target: selItem.target,
-                color: selItem.color,
-                bg_color: selItem.bg_color,
-                className: selItem.className,
+                fontFamily: this.classFamily.value,
+                fontStyle: this.classStyle.value,
+                target: this.targetEle.value,
+                color: this.targetColor.value,
+                bg_color: this.targetBgColor.value,
+                className: this.targetClassName.value,
               },
             });
           });
-        // console.log("getFont", res);
-      });
-      changed = true;
-      return check;
-    } else if (!changed) {
-      alert("select at lease the font family, please");
-    }
+      }
+    });
   }
-});
+  sample_font() {
+    this.sampleFont.style.display = "none";
+    this.checkSampleFont.addEventListener("click", (e) => {
+      if (e) {
+        this.isShowing = true;
+        this.selItem = {
+          fontStyle: this.classStyle.value,
+          fontFamily: this.classFamily.value,
+          target: this.targetEle.value,
+          color: this.targetColor.value,
+          bg_color: this.targetBgColor.value,
+          className: this.targetClassName.value,
+        };
+        console.log(this.selItem);
+        this.addPara(this.sampleFont);
+      } else {
+        this.isShowing = false;
+        while (this.sampleFont.firstChild) {
+          this.sampleFont.removeChild(this.sampleFont.lastChild);
+        }
+        this.sampleFont.style.display = "none";
+      }
+    });
+  }
+  addPara(element) {
+    //erasing all children
+
+    while (element.firstChild) {
+      element.removeChild(element.lastChild);
+    }
+    //Creating Para
+    const childP = document.createElement("p");
+    childP.innerHTML = this.phrase;
+    childP.id = "childP";
+    childP.style.cssText = this.generateCssText(this.selItem);
+    console.log(childP.style);
+    element.appendChild(childP);
+    //creating Event to close childP
+    element.style.cursor = "pointer";
+    element.classList.add("sampleFont");
+    element.style.display = "block";
+    element.addEventListener("click", (e) => {
+      if (e) {
+        while (element.firstChild) {
+          element.removeChild(element.lastChild);
+        }
+        element.style.display = "none";
+        element.classList.remove("sampleFont");
+      }
+    });
+  }
+  generateCssText(selItem) {
+    let cssText = "";
+    JSON.parse(selItem.className).forEach((style) => {
+      let key = Object.keys(style)[0];
+      let value = Object.values(style)[0];
+      cssText += `${key}:${value};`;
+    });
+    cssText += `font-family:${selItem.fontFamily}, ${selItem.fontStyle};color:${selItem.color};background:${selItem.bg_color}`;
+    return cssText;
+  }
+}
+const newClass = new FontClass();
+newClass.create_build_Options();

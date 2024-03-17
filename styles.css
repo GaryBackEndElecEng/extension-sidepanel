@@ -13,6 +13,20 @@ img.logo {
   box-shadow: 1px 1px 12px 2px darkgrey, -1px -1px 12px 2px darkgrey;
   margin-inline: 1rem;
 }
+img {
+  border: 1px solid black;
+  border-radius: 10px 10px 10px 10px;
+  z-index: 0;
+}
+img::before,
+img::after {
+  content: "";
+  display: block;
+  inset: 20px;
+  z-index: -1;
+  position: relative;
+  background: blue;
+}
 p {
 }
 h1 {

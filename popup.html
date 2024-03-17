@@ -11,46 +11,118 @@
   <link rel="stylesheet" src="./styles.css">
   <style>
     body {
-      min-width: 400px;
-      min-height: 400px;
+      min-width: 450px;
+      min-height: 450px;
+    }
+
+    img {
+      box-shadow: 1px 1px 12px 2px darkgrey;
+      border-radius: 10px 10px 10px 10px;
+      transform: skew(0deg, 0deg);
+      animation:skewStraight 1s ease-in-out;
+    }
+
+    shadow {
+      box-shadow: 1px 1px 12px 2px darkgrey;
+      border-radius: 10px 10px 10px 10px;
+      padding: 1rem;
+    }
+    div#conversion,div#fact{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      flex:0 0 50%;
+    }
+    @keyframes skewStraight {
+      from {transform:skew(10deg,10deg);}
+      to {transform:skew(0deg,0deg);}
     }
   </style>
 </head>
 
 <body>
-  <h3 class="lean display-4 text-center">selected lists</h3>
-  <div class="d-flex flex-column gap-2 justify-content-center align-items-center my-2">
-    <h6 class="display-6 lean text-warning mb-1">get a fact</h6>
-    <div class="my-auto d-flex items-center gap-2 border border-secondary shadow rounded mx-2 px-2">
-      <div class="form-group" id="DAY">
-        <label for="day">day</label>
-        <input type="text" id="day" class="form-control" name="day">
-        <small>number</small>
+  <nav class="d-flex justify-content-between align-items-center mx-auto py-1 px-1.5">
+    <!-- Navigate the SIDEPANEL OR OPTION BELOW -->
+    <img src="./images/icon48.png" alt="www.masterconnect.ca" />
+    <div class="d-flex justify-content-center align-items-center mx-auto gap-1">
+      <button id="openSidebar" class="btn btn-primary rounded px-2 py-1 btn-sm rounded shadow py-0 text-sm">open sidepanel</button>
+    <button id="optionPage" class="btn btn-primary rounded px-2 py-1 btn-sm rounded shadow py-0 text-sm">open options</button>
+    </div>
+  </nav>
+  <div class="flex-50 d-flex justify-content-between align-items-center mx-auto gap-1">
+    <div id="fact" class=" shadow">
+      <h6 class="display-6 lean text-warning mb-1">get a fact</h6>
+      <div class="my-auto d-flex align-items-center gap-2 border border-secondary shadow rounded mx-2 px-2 relative">
+        <div class="form-group w-50" id="DAY">
+          <label for="day">day</label>
+          <input type="text" id="day" class="form-control" name="day">
+          <small>number</small>
+        </div>
+        <div class="form-group w-50" id="MONTH">
+          <label for="day">month</label>
+          <input type="text" id="month" class="form-control" name="month">
+          <small>number</small>
+        </div>
       </div>
-      <div class="form-group" id="MONTH">
-        <label for="day">month</label>
-        <input type="text" id="month" class="form-control" name="month">
-        <small>number</small>
+      <!-- displayed results below -->
+      <div id="thoughtResults" class="m-2 border shadow rounded"></div>
+      <div class="d-flex flex-wrap  justify-content-center align-items-center gap-2">
+        <button class="btn btn-info rounded btn-small" id="submitThought">get fact</button>
+        <!-- <button class="btn btn-info rounded btn-small" id="testBtn">test</button> -->
       </div>
     </div>
-    <div id="thoughtResults" class="m-2 border shadow rounded"></div>
-    <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
-      <button class="btn btn-info rounded btn-small" id="submitThought">get fact</button>
-      <button class="btn btn-info rounded btn-small" id="testBtn">test</button>
+    <div id="conversion" class="shadow">
+
+      <h6 class="display-6 lean text-warning mb-1">$ conversion</h6>
+      
+        <form class="align-self-center d-flex flex-column align-items-stretch justify-content-center gap-2 border shadow rounded mx-2 px-2">
+
+          <div class="form-group lean font-weight-light">
+            <label for="fromSelect" class="text-primary">from $$$</label>
+            <select id="fromSelect" name="fromSelect" class="form-control" value="none">
+              <option disabled>from $$</option>
+            </select>
+          </div>
+          <div class="form-group lean font-weight-light">
+            <label for="toSelect" class="text-primary">to $$$</label>
+            <select id="toSelect" name="toSelect" class="form-control" value="none">
+              <option disabled>to $$</option>
+            </select>
+          </div>
+          <div class="form-group font-weight-light lean">
+
+            <label for="amount" class="text-primary">amount</label>
+            <input id="amount" name="amount" class="form-control" placeholder="enter amount">
+            </input>
+          </div>
+          <div class="flex flex-col mx-10">
+
+            <ul id="monResults" class="lean font-weight-bold ">
+              <!-- This is where the results are injected -->
+            </ul>
+          </div>
+          <button id="btnMon" class="rounded btn btn-sm btn-success m-1 " type="button"> $ convert
+          </button>
+        </form>
+      
+
+      <!-- displayed fact results below -->
+      <div id="thoughtResults" class="m-2 border shadow rounded"></div>
+      
     </div>
   </div>
+  <h3 class="lean display-6 text-center text-primary">selected lists</h3>
+  <!-- selected items below -->
   <ul id="popuplist">
 
 
   </ul>
-  
+
   <h6 id="fontSelected"></h6>
-  <div class="d-flex flex-colummn gap-2 my-1 align-items-center justify-content-center mb-2">
-    <button id="openSidebar" class="btn btn-primary rounded px-2 py-1 btn-sm rounded shadow">open sidepanel</button>
-    <button id="optionPage" class="btn btn-primary rounded px-2 py-1 btn-sm rounded shadow">open options</button>
-   
-  </div>
   
+  
+
 </body>
 <script src="./popup.js"></script>
 

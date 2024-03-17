@@ -17,6 +17,50 @@
 }
 body{
   font-family:"Roboto serif";
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+div#sampleFont{
+  display:none;
+  border:none;
+  border-radius:none;
+  box-shadow:"";
+  position:relative;
+  z-index:0;
+}
+div#sampleFont.sampleFont{
+  display:none;
+  border:1px solid grey;
+  border-radius:10px 10px 10px 10px;
+  padding:1rem;
+  box-shadow:1px 1px 12px 3px black;
+  position:relative;
+  z-index:0;
+}
+div#sampleFont.sampleFont::after{
+  display:none;
+  content:"";
+  position:absolute;
+  inset:10% 20% 60% 20%;
+  z-index:10;
+  background:white !important;
+  border:1px solid black;
+  color:black !important;
+  text-align:center;
+  
+}
+div#sampleFont:hover::after{
+  display:block;
+  content:"click to close";
+}
+hr{
+  height:5px;
+  width:100%;
+  background:rgb(2, 213, 154);
+  margin-block:1.25rem;
 }
 </style>
 </head>
@@ -24,71 +68,70 @@ body{
 <body>
   <div class="d-flex justify-content-between align-items-center my-auto mx-1 px-1">
     <img src="./images/icon128.png" alt="www.masterconnect.ca" class="logo"/>
-    <div class="d-flex flex-column gap-1 justify-content-center align-items-center">
-      <h1 class="text-center display-3 lean">Dictionary</h1>
+    <div class="d-flex flex-column gap-[0.5rem] justify-content-center align-items-center">
+      <h1 class="text-center display-3 lean">Lookup plus</h1>
       <h6 class="display-6 lean">masterconnect.ca</h6>
+      <h6 class="text-primary text-center">Gary Wallace</h6>
     </div>
   </div>
   <hr />
 
-  <p id="select-a-word" class="text-center lean">Select a word to see the definition or save a paragraph,email.</p>
+  
   <div class="d-flex flex-column justify-content-start align-items-center gap-2" id="showTime">
-    <div class="m-auto">
-      <h2>selection</h2>
+    <div class="m-auto text-center">
+      <h2 class="lean display-3 text-underline text-primary">selection</h2>
       <div id="sidelist"></div>
     </div>
-    <div class="d-flex flex-column align-items-center gap-2">
+    <p id="select-a-word" class="text-center lean">Select a word to see the definition or save a paragraph,email.</p>
+    <div class="d-flex  align-items-center gap-2">
       <button id="clearMemory" class="px-3 py-1 rounded btn btn-warning btn-sm"> clear memory</button>
       <button id="saveCsv" class="px-3 py-1 rounded btn btn-success btn-sm"> save csv</button>
     </div>
-    <h6 class="display-6 lean text-center"> add styles</h6>
+    <hr/>
+    <h6 class="display-6 lean text-center text-primary text-underline"> add page styles</h6>
+    <p id="select-a-word" class="text-center lean">select what area of the webpage you want to style-change.</p>
   </div>
   <div class="d-flex flex-column justify-content-center align-items-center mt-10 shadow rounded gap-2 px-2">
     <div id="containerSelect" class="m-auto d-flex flex-row flex-wrap justify-content-center align-items-center gap-1 border">
       <div class="form-group text-center">
-        <label for="target"> Element</label>
+        <label for="target"class="text-primary"> Element</label>
         <select name="target" value="target" id="target"
           class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
 
         </select>
       </div>
       <div class="form-group text-center">
-        <label for="color"> T.color</label>
+        <label for="color"class="text-primary"> T.color</label>
         <select name="color" value="color" id="color"
           class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
 
         </select>
       </div>
       <div class="form-group text-center">
-        <label for="bg_color"> background</label>
+        <label for="bg_color"class="text-primary"> background</label>
         <select name="bg_color" value="bg_color" id="bg_color"
           class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
 
         </select>
       </div>
       <div class="form-group text-center">
-        <label for="className"> add class</label>
+        <label for="className"class="text-primary"> add class</label>
         <select name="className" value="className" id="className"
           class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
 
         </select>
       </div>
       <div class="form-group text-center">
-        <label for="fontFamily">add style</label>
-        <select name="fontFamily" value="fontFamily" id="fontFamily"
+        <label for="classStyle" class="text-primary">add style</label>
+        <select name="fontStyle" value="classStyle" id="classStyle"
           class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
 
         </select>
       </div>
+      
       <div class="form-group text-center">
-        <label for="scripts">lang. type</label>
-        <select name="scripts" value="scripts" id="scripts"
-          class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
-        </select>
-      </div>
-      <div class="form-group text-center">
-        <label for="fontList">f.family</label>
-        <select name="font" value="font" id="fontList"
+        <label for="classFamily" class="text-primary">f.family</label>
+        <select name="classFamily" value="classFamily" id="classFamily"
           class="m-auto d-flex flex-column justify-content-center align-items-center gap-2 form-control">
           <option disabled value="select" class="m-auto">select</option>
         </select>
@@ -96,9 +139,13 @@ body{
 
     </div>
     
-    <div class="d-flex flex-colummn gap-2 my-1 align-items-center justify-content-center mb-2">
+    <div class="d-flex  gap-2 my-1 align-items-center justify-content-center mb-2">
 
       <button id="setFont" class="btn btn-primary rounded px-2 py-1 btn-sm rounded shadow">setFont</button>
+      <button id="checkSampleFont" class="btn btn-primary rounded px-2 py-1 btn-sm rounded shadow">test Font</button>
+    </div>
+    <div id="sampleFont" class="d-flex flex-column justify-content-center align-items-center gap-1">
+      
     </div>
 
   </div>

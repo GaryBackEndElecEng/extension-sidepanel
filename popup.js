@@ -151,3 +151,157 @@ $(document).ready(function () {
     }
   });
 });
+
+//----------- THIS IS FOR THE CURRENCY- CLASS--------//
+
+class ConvertCurrency {
+  constructor() {
+    this.list = [];
+    this.fromSelect = document.querySelector("select#fromSelect");
+    this.toSelect = document.querySelector("select#toSelect");
+    this.amount = document.querySelector("input#amount");
+    this.monResults = document.querySelector("ul#monResults");
+    this.submit_ = document.querySelector("button#btnMon");
+    this.numberRes = parseFloat(0);
+  }
+  executeMain() {
+    this.getList();
+    // console.log(this.submit_); //works
+    this.submit_.addEventListener("click", (e) => {
+      if (e) {
+        this.convert();
+      }
+    });
+
+    //this goes last below
+  }
+  //THIS SETS this.list with LIST
+  getList() {
+    let list = [];
+    const url = "https://currency-exchange.p.rapidapi.com/listquotes";
+    const options = {
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": "512e19eb3cmsh0b9bf8c65edd50ep11ae4bjsn9a01883aacf8",
+        "X-RapidAPI-Host": "currency-exchange.p.rapidapi.com",
+      },
+    };
+
+    fetch(url, options)
+      .then((res) => {
+        list = res.text().then((list) => {
+          // console.log("LIST inside", list);//works
+          this.list = JSON.parse(list);
+          this.buildOptions(this.fromSelect, this.list);
+          this.buildOptions(this.toSelect, this.list);
+        });
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+  }
+  convert() {
+    const fromCurr = this.fromSelect.value;
+    const toCurr = this.toSelect.value;
+    const units = 1;
+
+    const url = `https://currency-exchange.p.rapidapi.com/exchange?from=${fromCurr}&to=${toCurr}&q=${units}`;
+    const options = {
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": "512e19eb3cmsh0b9bf8c65edd50ep11ae4bjsn9a01883aacf8",
+        "X-RapidAPI-Host": "currency-exchange.p.rapidapi.com",
+      },
+    };
+    fetch(url, options)
+      .then((res) => {
+        res.text().then((results) => {
+          // console.log("inside got results", results); //works
+
+          this.monRes = parseFloat(results);
+          this.buildResult(
+            this.monResults,
+            "from",
+            this.amount.value,
+            this.monRes
+          );
+          this.buildResult(
+            this.monResults,
+            "to",
+            this.amount.value,
+            this.monRes
+          );
+        });
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+  }
+  //NOTE: IF NO LIST THEN COULD NOT GET FROM ASYNC
+  buildOptions(parent, list) {
+    if (list.length > 0) {
+      list.forEach((curr, index) => {
+        const option = document.createElement("option");
+        option.style = "text-center lean px-1";
+        if (index === 0) {
+          option.value = "select";
+          option.innerHTML = "select";
+          option.disabled;
+        } else {
+          option.value = curr;
+          option.innerHTML = curr;
+        }
+        parent.appendChild(option);
+      });
+    }
+  }
+  //get amount and calculate units=1 from this.convert() type=from | to
+  buildResult(parent, type, amount, monRes) {
+    //CleanUp
+    this.cleanUp(parent);
+    //building:type== from | to |result
+    const li = document.createElement("li");
+
+    if (type === "from") {
+      li.innerHTML = `from: $${amount} ${this.fromSelect.value}`;
+      li.className = "lean";
+    } else if (type === "to") {
+      const convNum = parseFloat(amount * monRes);
+      const conv_num = convNum.toFixed(2);
+      li.innerHTML = `to: $${conv_num} ${this.toSelect.value}`;
+      li.className = "lean font-weight-bold";
+      li.style.fontWeight = "bold";
+    }
+    setTimeout(() => {
+      parent.appendChild(li);
+    }, 10);
+  }
+  cleanUp(parent) {
+    let nodes = parent.childNodes;
+    if (nodes.length > 2) {
+      while (parent.firstChild) {
+        parent.removeChild(parent.lastChild);
+      }
+    }
+  }
+  //ultilities
+  static isNum(integer) {
+    if (
+      !isNaN(integer) &&
+      typeof integer === "number" &&
+      parseInt(integer) !== NaN
+    ) {
+      return true;
+    }
+    return false;
+  }
+  static isFloat(num) {
+    return (typeof num === "number" && num < 1) || num > 1;
+  }
+}
+window.onload = async () => {
+  // const start = new ConvertCurrency();
+  // start.getList();
+};
+const start = new ConvertCurrency();
+start.executeMain();

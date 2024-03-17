@@ -8,43 +8,386 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <title>Option Page</title>
     <script src="./jquery.js"></script>
-    <link rel="stylesheet" src="./styles.css">
+    <!-- <link rel="stylesheet" href="option.css" type="css/text"> -->
     <style>
         body {
-            max-width: 800px;
-            max-height: 800px;
-           
-            padding: 10rem;
+            max-width: 1100px;
+            min-height: 900px;
+            font-family: 'Century, cursive';
+            padding-block: 6rem;
+            padding-inline: 4rem;
+        }
+
+        aside,
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 2rem;
+            width: 100%;
+        }
+
+        main {
+            flex: 0.7;
+
+        }
+
+        aside {
+            flex: 0.3;
+        }
+
+        label {
+            font-size: 20px;
+            color: hsl(229, 100%, 30%);
+            text-decoration: underline;
+            text-underline-offset: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 18px;
+            text-wrap: wrap;
+        }
+
+        span.special {
+            text-decoration: underline;
+            font-style: italic;
+        }
+
+        span.special::after {
+            content: "";
+            inset: 0% 90% 0% 90%;
+            background: red;
+        }
+
+        pre {
+            display: flex;
+            flex-wrap: wrap;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        pre::after {
+            content: "";
+            inset: 0% 90% 0% 90%;
+            background: red;
+        }
+
+        nav>a>img {
+            position: relative;
+            border: 1px solid black;
+            border-radius: 10px 10px 10px 10px;
+            z-index: 0;
+            width: auto;
+            transition: all 1.15s ease-in-out;
+        }
+
+        nav>a>img::after {
+            content: "hello";
+            display: block;
+            inset: -1rem;
+            z-index: -1;
+            position: absolute;
+            width: 5rem;
+            background: blue;
+        }
+
+        nav>a>img:hover {
+            cursor: pointer;
+            transform: scale(1.02);
+            transition: all 1.125s ease-in-out;
+        }
+
+        nav>a>img:hover::after {
+            content: "hello";
+            display: block;
+            width: 2rem;
+            border: 3px solid red;
+        }
+
+        hr {
+            margin-block: 30px;
+            width: 100%;
+            height: 10px;
+            background: blue;
+            position: relative;
+        }
+
+        hr::before {
+            content: "";
+            display: block;
+            position: absolute;
+            inset: 0px 10% 0px 10%;
+            background: red;
+            color: black;
+        }
+
+        hr::before:hover {
+            content: "hello";
+        }
+
+        a.site {
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        div.links {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            transition: all 0.75s ease-in-out;
+        }
+
+        div.links>a {
+            text-decoration: none;
+            transition: all 0.75s ease-in-out;
+        }
+
+        div.links>a>span>img.icon {
+            max-width: 20px;
+            max-height: 20px;
+            background: white;
+            border-radius: 10px 10px 10px 10px;
+            transition: all 0.75s ease-in-out;
+        }
+
+        div.links:hover>a {
+            text-decoration: underline;
+            transition: all 0.75s ease-in-out;
+        }
+
+        div.links:hover>a img {
+            background: pink;
+            transition: all 0.75s ease-in-out;
+            border-radius: 50%;
+        }
+
+        /* NEXT aside SECTION */
+        summary.open {
+            background: black;
+            transform: translateX(-10%);
+            color: white;
+            padding: 1rem;
+            border-radius: 20px 20px 20px 20px;
+            transition: all 1.5s ease-in-out;
+        }
+
+        summary.close {
+            background: black;
+            transform: translateX(0%);
+            color: white;
+            padding: 1rem;
+            border-radius: 20px 20px 20px 20px;
+            transition: all 1.5s ease-in-out;
+        }
+
+        .showTaskDetail {
+            position: relative;
+            width: 100%;
+            min-height: 100px;
+            margin-inline: auto;
+        }
+
+       
+
+        /* SHARE *********/
+        @media screen and (max-width:930px) {
+
+            aside,
+            main {
+                flex: 1;
+            }
+        }
+
+        @keyframes openPara {
+            from {
+                transform: translateY(-100%);
+                opacity:1;
+            }
+
+            to {
+                transform: translateY(0%);
+                opacity:1;
+            }
+        }
+        @keyframes openForm {
+            from {
+                height:50px;
+                opacity:0;
+            }
+
+            to {
+                min-height:300px;
+                opacity:1;
+            }
+        }
+        @keyframes closeForm {
+            from {
+                min-height:300px;
+                opacity:1;
+            }
+
+            to {
+                min-height:50px;
+                opacity:0;
+            }
         }
     </style>
 </head>
 
 <body class="container-fluid mx-auto ">
-    <div class="d-flex flex-column justify-content-center align-items-center mt-10">
-        <div id="containerSelect"
-            class="m-auto d-flex flex-row flex-wrap justify-content-start align-items-center gap-1">
+    <nav class="option position-sticky w-100 d-flex justify-content-between align-items-center">
+        <a href="https://www.masterconnect.ca"> <img src="./images/icon128.png" alt="www.masterconnect.ca" /></a>
+        <div class="d-flex flex-wrap justify-content-center align-items-center gap-3">
+            <div class="links lean">
+                <a href="https://www.masterconnect.ca">
 
-            <select name="fontFamily" value="fontFamily" id="fontFamily"
-                class="m-auto d-flex flex-column justify-content-center align-items-center gap-2">
+                    <span><img class="iconImg" src="./images/home-fill.svg" alt="www.masterconnect.ca" /></span>
+                    <span class="lean">home:</span>
+                </a>
+            </div>
+            <div class="links lean">
+                <a href="https://www.masterultils.com">
 
-            </select>
-            <select name="scripts" value="scripts" id="scripts"
-                class="m-auto d-flex flex-column justify-content-center align-items-center gap-2">
+                    <span><img class="iconImg" src="./images/verified.svg" alt="www.masterconnect.ca" /></span>
+                    <span>tools:</span>
+                </a>
+            </div>
+            <div class="links lean">
+                <a href="https://www.ablogroom.com">
 
-            </select>
-            <select name="font" value="font" id="fontList"
-                class="m-auto d-flex flex-column justify-content-center align-items-center gap-2">
-                <option disabled value="select" class="m-auto">select</option>
-            </select>
+                    <span><img class="iconImg" src="./images/comment.svg" alt="www.masterconnect.ca" /></span>
+                    <span>blogs:</span>
+                </a>
+            </div>
 
         </div>
-        <h6 id="fontSelected"></h6>
-        <div class="d-flex flex-colummn gap-2 my-1 align-items-center justify-content-center mb-2">
 
-            <button id="setFont" class="btn btn-primary rounded px-2 py-1 btn-sm rounded shadow">setFont</button>
-        </div>
-        <div class="d-flex flex-column align-items-center my-2" id="testFont"></div>
+    </nav>
+    <hr />
+    <div class="d-flex flex-column flex-sm-row align-items-start mx-auto px-1 gap-2">
+        <aside class=" mt-10">
+
+            <form id="containerSelect"
+                class=" option m-auto d-flex flex-column flex-wrap justify-content-start align-items-center gap-2">
+                <div class="form-group">
+                    <label for="classFamily" class="lean text-size-18px">font family class</label>
+                    <select name="classFamily" value="fontFamily" id="classFamily"
+                        class="m-auto d-flex flex-column justify-content-center align-items-center gap-2">
+
+                    </select>
+                </div>
+                <div class="font-group">
+                    <label for="classStyle" class="lean font-size-18px"> font style class</label>
+                    <select name="classStyle" value="classStyle" id="classStyle"
+                        class="m-auto d-flex flex-column justify-content-center align-items-center gap-2">
+
+                    </select>
+                </div>
+
+            </form>
+            <div class="option d-flex flex-column gap-3 align-items-center justify-content-center my-2">
+                <div class="mx-auto text-center my-2 d-flex flex-column gap-1">
+                    <p id="selectedFont"></p>
+                </div>
+                <button id="setFontClass" class="btn btn-primary rounded px-2 py-1 btn-sm rounded shadow">page
+                    font</button>
+
+            </div>
+            <hr />
+            <!------- NEXT SECTION DISPLAY STORAGE----------->
+            <h6 class="display-6 lean text-center">Your storage</h6>
+            <ol id="showStorage" class="d-flex flex-column gap-2 mx-auto align-items-center justify-content-start">
+                <!-- THIS IS FOR DISPLAYING THE STORAGE WORDCONTEXTS -->
+            </ol>
+
+            <!------- TASKS----------->
+            
+            
+            <h6 class="lean display-6 text-align-center" style="text-underline-offset:0.5rem;">TODO tasks</h6>
+            <button id="showHideForm" class="btn btn-primary rounded text-sm mx-auto" isOpen="false">show form</button>
+            <div id="formWrapper" class="mx-auto">
+            <form id="formTask" name="form" hidden="true"
+                class="d-flex flex-column justify-content-start align-items-center mx-auto gap-1">
+                <div class="form-group">
+                    <label for="task" class="lean mx-auto">task</label>
+                    <input type="text" name="task" id="task" #task class="form-control" required placeholder="new task"
+                        value="">
+                </div>
+                <div class="form-group">
+                    <label for="details_" class="lean mx-auto">details</label>
+                    <textarea rows="6" cols="50" id="details_" name="details_" #details_ class="form-control" required
+                        style="width:100%" placeholder="new detail" value=""></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="due" class="lean mx-auto">due date</label>
+                    <input type="date" name="due" id="due" #due class="form-control" value="">
+                </div>
+                
+                <button id="taskSubmit" type="submit" class="btn btn-sm btn-primary text-sm mx-auto rounded"
+                    value="add">add</button>
+            </form>
+            </div>
+            <!-- ----------SHOW TASKS ///------->
+            <div id="tasksWrapper">
+                <!--looping=> <div class="showTask"></div> -->
+            </div>
+        </aside>
+        <main>
+            <!-- INTRO SECTION -->
+            <p>Thanks for choosing this extension. I enjoy providing free stuff for the public and enjoy creating and
+                learning with a smile -<quote> life is not life if you don’t learn with enjoyment</quote>.
+            </p>
+            <p> The links above are links to my websites that offer additional free services that you will enjoy using,
+                including <span class="special">generating graphs</span>,<span class="special">interactive graphs</span>
+                and <span class="special">data flow graphs</span> for a project or checking to see if a <span
+                    class="special">domain or website is a valid and safe. The search will tell you everything about the
+                    domaine,,</span>
+                and so much more.
+            </p>
+            <pre> You can find that by clicking on the link "tools" above or by clicking here <span><a class ="site" href="https://www.masterultils.com">tools</a></span>
+            </pre>
+            <p>If you <span class="special">want to quickly post or blog something,,images,thoughts,etc</span> to the
+                world, then this site <span><a class="site" href="https://www.ablogroom.com">ablogroom</a></span> is for
+                you. This allows you to <span class="special">quickly register</span> your name,<span class="special">
+                    posts or blog</span> to the world, or simply send your link to a friend or facebook in a snap.It
+                comes with a dynamic image and description of your post or blog without typing. When someone searches
+                for your name, they will find it easily with <span class="special">dynamic google register
+                    uploads</span> -
+            <pre>give Google a month before it starts showing up.</pre>
+            </p>
+            <p>Finally, if you need someone to put a<span class="special"> website</span> together for your <span
+                    class="special">family and or business</span> then give me a call or you can click on <quote>home
+                </quote> above or here <span><a class="site" href="https://www.masterconnect.ca">home</a></span>. I will
+                put it all together and securely cheaply and the <span class="special">site will come with all the bells
+                    and whistles</span> needed for success.
+            </p>
+            <!-- BIO SECTION -->
+            <summary id="summaryBio" class="close">see BIO <img src="./images/arrow-up.svg"
+                    style="background:white;;border-radius:50%;margin-inline:20px;" /></summary>
+            <div id="detailsID" class="mx-1">
+                
+                <p>
+                    
+                    I'm a typical left-brained engineer that loves solving problems. I find it amazing looking at the
+                    internet as a true web of client linkages from data centers stretched accross the world. I have
+                    served in a war, was shot at a few times, while stationed at a FOB <span class="special">(Forward
+                        Observation Post)</span> and beat an Afghanie in chess ( they love chess). I converted my brain
+                    from electronics <span class="special">( curious about what's in that blackbox called a
+                        comuter)</span> to now an a developer and pretty good at it. As they say, if your love it then,
+                    you become good at it. For more about me see <span><a class="site"
+                            href="https://www.masterconnect.ca/contact">link</a></span> and send me a msg. I would love
+                    to here from you.
+                <pre>-Gary Wallace</pre>
+                </p>
+            </div>
+            
+        </main>
+
     </div>
+
 </body>
 <script src="./options.js"></script>
 
