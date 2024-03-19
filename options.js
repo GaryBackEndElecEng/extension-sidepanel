@@ -18,6 +18,7 @@ class FontClass {
     this.setFontClass = document.getElementById("setFontClass");
     this.options = document.querySelectorAll(".option");
     this.selectedFont = document.getElementById("selectedFont");
+    this.fontSize = document.querySelector("input#fontSize");
   }
 
   create_build_Options() {
@@ -32,9 +33,18 @@ class FontClass {
       familyList.forEach((font, index) => {
         const option_fam = document.createElement("option");
         option_fam.type = "text";
-        option_fam.value = font.fontId;
-        option_fam.innerHTML = font.fontId;
         option_fam.className = "text-sm lean fontItem text-center";
+        if (index === 0) {
+          const Constant = familyList.filter(
+            (font) => font.fontId === "Constantia"
+          )[0].fontId;
+          option_fam.value = Constant;
+          option_fam.innerHTML = Constant;
+        } else {
+          option_fam.value = font.fontId;
+          option_fam.innerHTML = font.fontId;
+        }
+
         this.classFamily.appendChild(option_fam);
       });
     }
@@ -52,6 +62,7 @@ class FontClass {
   }
 
   selectFontFamily() {
+    this.fontSize.style.cssText = "width:50px;";
     this.selItem.fontFamily = this.classFamily.value;
     this.selItem.fontStyle = this.classStyle.value;
     this.setFontClass.addEventListener("click", (e) => {
@@ -61,7 +72,8 @@ class FontClass {
           fontStyle: this.classStyle.value,
         };
         this.paras.forEach((p) => {
-          p.style.cssText = `font-family:${this.selItem.fontFamily}, ${this.selItem.fontStyle}`;
+          const fontSize = `${this.fontSize.value}px`;
+          p.style.cssText = `font-family:${this.selItem.fontFamily}, ${this.selItem.fontStyle};font-size:${fontSize}`;
         });
         this.lis.forEach((li) => {
           li.style.cssText = `font-family:${this.selItem.fontFamily}, ${this.selItem.fontStyle}`;
@@ -164,14 +176,15 @@ class DisplayStorage {
 
   getStorage() {
     chrome.storage.sync.get(["wordContexts"]).then((res) => {
-      if (res.wordContexts) {
-        this.showStorage(res.wordContexts);
-      }
+      this.showStorage(res.wordContexts);
     });
   }
   showStorage(wordContexts) {
-    // console.log(wordContexts);
+    this.cleanUp(this.show_storage);
+    this.show_storage.style.cssText = "";
     if (wordContexts && wordContexts.length > 0) {
+      let adjustHeight = `${wordContexts.length * 34 + 75}px`;
+      this.show_storage.style.cssText = `height:${adjustHeight};overflow-y:scroll;background:whitesmoke;border-radius:20px 20px 20px 20px;box-shadow:1px 1px 12px 2px darkgrey;`;
       wordContexts.forEach((word, index) => {
         const div_ = document.createElement("div");
         if (word.word) {
@@ -190,11 +203,25 @@ class DisplayStorage {
           </ol></li>`;
         }
 
-        div_.style =
-          "d-flex flex-column justify-content-center align-items-center gap-1";
-        div_.className = "child";
+        div_.style.className =
+          "child d-flex flex-column justify-content-center align-items-center gap-1 my-2 mx-auto py-2";
+
         this.show_storage.appendChild(div_);
       });
+    } else {
+      const H6 = document.createElement("h6");
+      H6.innerHTML = "storage empty";
+      H6.style.cssText =
+        "text-decoration:underline; text-underline-offset:0.5rem;";
+      H6.className = "lean display-6 text-primary";
+      this.show_storage.appendChild(H6);
+    }
+  }
+  cleanUp(parent) {
+    if (parent && parent.childNodes.length > 0) {
+      while (parent.firstChild) {
+        parent.removeChild(parent.lastChild);
+      }
     }
   }
 }
@@ -335,6 +362,7 @@ class TODOGet {
   };
   constructor() {
     this.tasksWrapper = document.getElementById("tasksWrapper");
+    this.removeCompletes = document.querySelector("button#removeCompletes");
   }
   //GETTING ITEMS FROM STORAGE
 
@@ -367,12 +395,12 @@ class TODOGet {
   //   return this._items;
   // }
   renderTasks() {
-    if (this._items && this._items.length > 0) {
+    if (this.items && this.items.length > 0) {
       //cleaning pre-renders
       TODOGet.cleanup(this.tasksWrapper);
       this.tasksWrapper.style.cssText =
-        "box-shadow:1px 1px 10px 2px darkgrey; border-radius:10px 10px 10px 10px; padding:0.5rem;";
-      this._items.forEach((item, index) => {
+        "box-shadow:1px 1px 10px 2px darkgrey; border-radius:10px 10px 10px 10px; padding:0.5rem;height:300px;overflow-y:scroll;";
+      this.sortDate(this.items).forEach((item, index) => {
         //CREATE COMPONENTS
 
         const showTask = document.createElement("div");
@@ -380,6 +408,7 @@ class TODOGet {
         const detail = document.createElement("p");
         const task = document.createElement("h6");
         const complete = document.createElement("input");
+        complete.name = "complete";
         const due = document.createElement("span");
         const date_ = document.createElement("span");
         showTask.className = "showTask";
@@ -391,7 +420,7 @@ class TODOGet {
         showTask.style.cssText =
           "position:relative;animation:none;width:100%;min-height:75px;padding-block:1rem;";
         detail.innerHTML = item.details;
-        complete.value = item.complete ? true : false;
+        complete.checked = item.complete ? true : false;
         complete.type = "checkbox";
         due.innerHTML = item.due;
         date_.innerHTML = item.date;
@@ -412,37 +441,242 @@ class TODOGet {
         showTask.appendChild(date_);
         showTask.appendChild(due);
         showTask.appendChild(hr);
-        showTask.style.display = "block";
-        showTask.style.animation = "openPara 1s ease-in-out";
-        showTask.style.display = "block";
-        this.tasksWrapper.appendChild(showTask);
-      });
-      this.deleteTask();
-    }
-  }
-  deleteTask() {
-    const completes = document.querySelectorAll("input.complete");
-    if (completes.length > 0) {
-      completes.forEach((comp, index) => {
-        comp.addEventListener("click", (e) => {
-          if (e && e.currentTarget.checked === true) {
-            console.log("clicked", e.currentTarget, e.currentTarget.checked);
-            const reduced = this._items.filter(
-              (item, index_) => index_ !== index
-            );
-            chrome.storage.sync.set({ todoItems: reduced });
+        showTask.style.display = "block;";
+        showTask.animate(
+          [
+            { opacity: 0.5, color: "blue" },
+            { opacity: 1, color: "black" },
+          ],
+          {
+            duration: 1000,
+            iterations: 1,
+          }
+        );
+        //event change on complete
+        complete.addEventListener("change", (e) => {
+          if (e) {
+            const checked_ = e.currentTarget.checked;
+            let add = this._items[index];
+            this._items[index] = { ...add, complete: checked_ };
+            chrome.storage.sync.set({ todoItems: this._items });
+            TODOGet.cleanup(this.tasksWrapper);
+            this.renderTasks();
           }
         });
+        this.tasksWrapper.appendChild(showTask);
       });
+      this.removeCompleted();
     }
   }
+  removeCompleted() {
+    this.removeCompletes.addEventListener("click", (e) => {
+      const completes = document.querySelectorAll("input.complete");
+      if (completes && completes.length > 0 && e) {
+        const remainder = this._items.filter(
+          (_item) => _item.complete !== true
+        );
+        chrome.storage.sync.set({ todoItems: remainder });
+      }
+    });
+  }
+
   // ULTILITIES
   static cleanup(parent) {
     while (parent.childNodes && parent.childNodes.length > 0) {
       parent.removeChild(parent.lastChild);
     }
   }
+  sortDate(items) {
+    if (items && items.length > 0) {
+      const sortItems = items.sort((a, b) => {
+        const aDate = new Date(a.due);
+        const bDate = new Date(b.due);
+        const check =
+          aDate.getMonth() <= bDate.getMonth() &&
+          aDate.getDate() <= bDate.getDate()
+            ? true
+            : false;
+        if (check) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+      return sortItems;
+    }
+  }
 }
 const showTasks = new TODOGet();
 showTasks.getOneTimeItems();
 showTasks.getItems();
+
+//--------------DOWNLOADING FILE (converting to csv)----------------------------//
+
+class FileDownload extends TODOGet {
+  _items = [];
+  item = {
+    date: "",
+    task: "",
+    details: "",
+    due: "",
+    complete: false,
+  };
+  fileName = "";
+
+  constructor() {
+    super();
+    this.downloadTasksContainer = document.querySelector(
+      "div#downloadTasksContainer"
+    );
+    this.downloadTasks = document.querySelector("button#downloadTasks");
+  }
+  get items() {
+    return this._items;
+  }
+  set items(items) {
+    this._items = items;
+  }
+
+  onClickDownload() {
+    this.downloadTasks.addEventListener("click", (e) => {
+      if (e) {
+        chrome.storage.sync.get(["todoItems"]).then((res) => {
+          if (res.todoItems) {
+            this.getItems(res.todoItems);
+          }
+        });
+      }
+    });
+  }
+  getItems(items) {
+    //GET ITEMS
+    this._items = items;
+    this.renderWindowDownload();
+  }
+  renderWindowDownload() {
+    // console.log("this.items", this._items);//works
+    const style_ = "width:100%;position:relative;min-height:100px;z-index:0;";
+    const style_container =
+      "background:black;position:absolute;top:-100%;transform:translateY(-100%);color:white;width:600px;z-index:200;border-radius:20px 20px 20px 20px;height:700px;padding-inline:0.5rem;";
+    const btnClass =
+      "btn btn-primary btn-sm rounded text-sm shadow text-center";
+    this.downloadTasksContainer.style.cssText += style_;
+    const button = document.createElement("button");
+    button.className = btnClass;
+    button.innerHTML = ` <span><img src="./images/verified.svg" style="color:red;margin-left:0.5rem;" alt="arrow"/></span><img src="./images/arrow-down.svg" style="background:black;color:white;margin-left:0.5rem;" alt="arrow"/>`;
+    button.id = "btnDownLoad";
+    const container = document.createElement("div");
+    container.style.cssText = style_container;
+    container.className =
+      "d-flex flex-column w-100 justify-content-center align-items-center gap-1 p-1 shadow";
+    const datalist = document.createElement("ul");
+    datalist.style.cssText =
+      "background:darkgrey;color:white;width:100%;height:500px;overflow-y:scroll;border-radius:inherit;";
+    datalist.className = "mx-auto my-1";
+    if (this._items && this._items.length > 0) {
+      this._items.forEach((item, index) => {
+        const list = document.createElement("li");
+        list.innerHTML = `${index + 1}.) task: ${item.task} - due Date:${
+          item.due
+        } - started: ${item.date}`;
+        list.style.cssText =
+          "color:aquablue;font-size:18px;padding-block:0.5rem";
+        datalist.appendChild(list);
+      });
+    }
+    container.appendChild(datalist);
+    this.addInputFileName(container);
+    console.log("at container", this.fileName);
+    container.appendChild(button);
+    this.downloadTasksContainer.appendChild(container);
+    container.animate(
+      [
+        //key frames
+        { transform: "translateY(-155%)" },
+        { transform: "translateY(-100%)" },
+      ],
+      {
+        duration: 1000,
+        iterations: 1,
+      }
+    );
+    this.activateDownload();
+  }
+  addInputFileName(parent) {
+    const group = document.createElement("div");
+    const input = document.createElement("input");
+    const label = document.createElement("label");
+    input.className = "form-control";
+    input.name = "fileName";
+    input.value = "";
+    input.className = "rounded";
+    input.style.cssText = "box-shadow:1px 1px 12px 2px white;";
+    input.placeholder = "file name";
+    group.className = "group-control mx-auto text-center my-2";
+    group.style.cssText = "color:white;";
+    label.style.cssText =
+      "text-decoration:underline;text-underline-offset:0.5rem;color:white;font-weight:bold;";
+    label.innerHTML = "enter file name";
+    group.appendChild(label);
+    group.appendChild(input);
+    parent.appendChild(group);
+    console.log("fileName inside", input.value);
+    input.addEventListener("change", (e) => {
+      if (e) {
+        this.fileName = e.currentTarget.value;
+      }
+    });
+  }
+  activateDownload() {
+    const btnDownLoad = document.querySelector("button#btnDownLoad");
+    btnDownLoad.addEventListener("click", (e) => {
+      if (e) {
+        console.log("get items", this.items, "fileName", this.fileName);
+        TODOGet.cleanup(this.downloadTasksContainer);
+        const storeDict = { fileName: this.fileName, items: this.items };
+        const createData = storeDict.items.map((item, index) => {
+          const massItem = {
+            date: item.date,
+            task: item.task,
+            details: item.details,
+            due: item.due,
+          };
+          let mass = "";
+          let mass2 = "";
+          if (index === 0) {
+            for (const [key, value] of Object.entries(massItem)) {
+              mass2 += `${key},`;
+            }
+            for (const [key, value] of Object.entries(massItem)) {
+              mass += `${value},`;
+            }
+            return `${mass2}\n${mass}\n`;
+          } else {
+            for (const [key, value] of Object.entries(massItem)) {
+              mass += `${value},`;
+            }
+            return `${mass}\n`;
+          }
+        });
+        const transfer = `data:text/csv;fileName=${storeDict.fileName};charset=utf-8,${createData}`;
+        console.log(transfer);
+        this.doDownload(transfer, storeDict.fileName);
+      }
+    });
+  }
+  doDownload(file, fileName) {
+    if (file) {
+      const encodedUri = encodeURI(file);
+      const a = document.createElement("a");
+      a.href = encodedUri;
+      a.hidden = true;
+      a.download = `${fileName}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      // window.open(encodedUri);
+    }
+  }
+}
+const start = new FileDownload();
+start.onClickDownload();

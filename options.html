@@ -11,7 +11,7 @@
     <!-- <link rel="stylesheet" href="option.css" type="css/text"> -->
     <style>
         body {
-            max-width: 1100px;
+            max-width: 1200px;
             min-height: 900px;
             font-family: 'Century, cursive';
             padding-block: 6rem;
@@ -267,7 +267,7 @@
 
     </nav>
     <hr />
-    <div class="d-flex flex-column flex-sm-row align-items-start mx-auto px-1 gap-2">
+    <div class="d-flex flex-column flex-sm-row align-items-start mx-auto px-1 gap-4">
         <aside class=" mt-10">
 
             <form id="containerSelect"
@@ -285,6 +285,11 @@
                         class="m-auto d-flex flex-column justify-content-center align-items-center gap-2">
 
                     </select>
+                </div>
+                <div class="font-group d-flex flex-column">
+                    <label for="fontSize" class="lean font-size-18px"> font size</label>
+                    <input name="fontSize" id="fontSize" name="fontSize" value=18
+                     type="number"   class="rounded">
                 </div>
 
             </form>
@@ -308,7 +313,7 @@
             
             <h6 class="lean display-6 text-align-center" style="text-underline-offset:0.5rem;">TODO tasks</h6>
             <button id="showHideForm" class="btn btn-primary rounded text-sm mx-auto" isOpen="false">show form</button>
-            <div id="formWrapper" class="mx-auto">
+            <div id="formWrapper" class="mx-auto" hidden>
             <form id="formTask" name="form" hidden="true"
                 class="d-flex flex-column justify-content-start align-items-center mx-auto gap-1">
                 <div class="form-group">
@@ -333,6 +338,10 @@
             <!-- ----------SHOW TASKS ///------->
             <div id="tasksWrapper">
                 <!--looping=> <div class="showTask"></div> -->
+            </div>
+            <div id="downloadTasksContainer" class="d-flex flex-row flex-wrap justify-content-center align-items-center gap-2">
+                <button id="downloadTasks" class="btn btn-success btn-sm shadow">down load task</button>
+                <button id="removeCompletes" class="btn btn-success btn-sm shadow">remove completes</button>
             </div>
         </aside>
         <main>

@@ -14,13 +14,17 @@ chrome.storage.sync.onChanged.addListener((changes) => {
   const wordContextParse = wordContexts;
   const newEntries = wordContextParse.newValue;
   // console.log("newEntreies", newEntries);
-  addToList(newEntries[newEntries.length - 1]);
-  add_deleteItem(newEntries);
+  updateList(newEntries);
+  create_deleteItems(newEntries);
 });
 
 function updateList(wordContexts) {
   const parent = document.getElementById("sidelist");
+  parent.style.cssText = "";
+  cleanUp(parent);
   if (wordContexts && wordContexts.length > 0) {
+    const adjustHeight = `${wordContexts.length * 26 + 100}px`;
+    parent.style.cssText = `overflow-y:scroll;height:${adjustHeight};`;
     wordContexts.forEach((word, index) => {
       const div_ = document.createElement("div");
       if (word.word) {
@@ -45,15 +49,22 @@ function updateList(wordContexts) {
       parent.appendChild(div_);
     });
   } else {
-    const getChildren = document.querySelectorAll("div.child");
+    cleanUp(parent);
+  }
+}
+
+function cleanUp(parent) {
+  const getChildren = document.querySelectorAll("div.child");
+  if (getChildren && getChildren.length > 0) {
     getChildren.forEach((ele, index) => {
       parent.removeChild(ele);
     });
   }
 }
-
 function addToList(word) {
   const parent = document.getElementById("sidelist");
+  const adjustHeight = `${wordContexts.length * 26 + 100}px`;
+  parent.style.cssText = `overflow-y:scroll;height:${adjustHeight};`;
   if (word) {
     const div_ = document.createElement("div");
     if (word.word) {
@@ -120,105 +131,6 @@ function create_deleteItems(wordContexts) {
       }
     });
   });
-}
-function add_deleteItem(wordContexts) {
-  const wdContexts = wordContexts;
-  const parent = document.getElementById("sidelist");
-  const ul_items = document.querySelectorAll("div#sidelist >div");
-
-  const input = document.createElement("input");
-  input.type = "checkbox";
-  const span = document.createElement("span");
-  const label = document.createElement("label");
-  label.innerHTML = "delete";
-  span.style = "text-decoration:underline;text-underline-offset-5;";
-  span.className = "form-group text-center text-primary text-underline";
-  input.style = "ml-1";
-  input.className = "form-control border shadow";
-  input.style.width = "5px";
-  span.appendChild(label);
-  span.appendChild(input);
-  ul_items[ul_items.length - 1].appendChild(span);
-
-  if (wdContexts) {
-    ul_items.forEach((ul, indx) => {
-      const span = ul.querySelector("span");
-      const input = span.querySelector("input");
-      span.addEventListener("click", (e) => {
-        if (e && input.checked && indx === ul_items.length - 1) {
-          parent.removeChild(ul_items[ul_items.length - 1]);
-          wdContexts.splice(indx, 1);
-          chrome.storage.sync.set({ wordContexts: wdContexts });
-        }
-      });
-    });
-  }
-}
-
-$("#saveCsv").click((e) => {
-  if (e) {
-    e.preventDefault();
-    downLoadFile();
-  }
-});
-
-function downLoadFile() {
-  const date = new Date().toString();
-  let fileContext = "";
-  const fileName = `${date}.csv`;
-  window.URL = window.webkitURL || window.URL;
-  chrome.storage.sync.get(["wordContexts"]).then((res) => {
-    if (res) {
-      let fileContext = res.wordContexts;
-      //converting it to csv format
-      fileContext = res.wordContexts.map((wordJson, index) => {
-        if (!wordJson) return null;
-        if (index === 0) {
-          return `url,word(s),email\n`;
-        }
-        let CSV = `${wordJson.url},${wordJson.word}-${wordJson.email}\n`;
-        return CSV;
-      });
-      let a = document.createElement("a");
-      a.display = "none";
-      a.target = "_blank";
-      const blob = new Blob(fileContext, { type: "application/*" });
-      a.href = URL.createObjectURL(blob);
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-    }
-  });
-}
-//NOT USED
-function getTime(city) {
-  let dateTime = {
-    abbreviation: "",
-    client_ip: "",
-    datetime: "",
-    day_of_week: 0,
-    day_of_year: 0,
-    timezone: "America/Toronto",
-    utc_datetime: "",
-    week_number: 0,
-  };
-  let req = new XMLHttpRequest();
-
-  req.onLoad = () => {
-    //done
-    dateTime = req.response;
-    showTime(req.response);
-  };
-  req.open("GET", `http://worldtimeapi.org/api/timezone/America/${city}`, true);
-  req.send();
-
-  return dateTime;
-}
-
-function showTime(dateTime) {
-  const div = document.createElement("div");
-  div.innerHTML = JSON.stringify(dateTime);
-  document.getElementById("showTime").appendChild(div);
 }
 
 $(document).ready(function () {
@@ -537,3 +449,312 @@ class FontClass {
 }
 const newClass = new FontClass();
 newClass.create_build_Options();
+
+class FileDownload {
+  _items = [];
+  _item = {
+    url: "",
+    word: "",
+    email: "",
+  };
+  fileName = "";
+
+  constructor() {
+    this.saveCsv = document.querySelector("button#saveCsv");
+    this.downloadContainer = document.querySelector("div#downloadContainer");
+  }
+  get items() {
+    return this._items;
+  }
+  set items(items) {
+    this._items = items;
+  }
+
+  onClickDownload() {
+    this.saveCsv.addEventListener("click", (e) => {
+      if (e) {
+        const date = new Date().toString();
+        const fileName = `${date}.csv`;
+        chrome.storage.sync.get(["wordContexts"]).then((res) => {
+          if (res) {
+            this.items = res.wordContexts;
+            this.showPopup(this.items);
+          }
+        });
+      }
+    });
+  }
+  showPopup(items) {
+    if (items.length > 0) {
+      const button = document.createElement("button");
+      const H6 = document.createElement("h6");
+      H6.className = "lean display-6 my-3";
+      H6.innerHTML = "your list";
+      const container = document.createElement("div");
+      this.downloadContainer.style.cssText =
+        "position:relative;top:30%;width:100%;height:auto;z-index:0;";
+      container.style.cssText =
+        "position:absolute;top:110%;left:0;background:black;color:white;height:450px;width:100%;padding:1rem;border-radius:inherit;z-index:100;box-shadow:1px 1px 12px 2px lightred;";
+      container.className =
+        "d-flex flex-column justify-content-center align-items-center gap-1";
+      button.id = "btnDownLoad";
+      button.style.cssText = "border-radius:inherit;margin-block:2rem;";
+      button.className =
+        "btn btn-success btn-sm rounded shadow my-2 text-center d-flex align-items-center gap-1 mx-auto";
+      button.innerHTML = `<span>d.load</span><img src="./images/arrow-down.svg" alt="arrow"  />`;
+      const ul = document.createElement("ul");
+      ul.className = "mx-auto p-1";
+      ul.style.cssText =
+        "background:white;color:black;padding:1;height:300px;overflow-y:scroll;";
+      if (items && items.length > 0) {
+        items.forEach((item, index) => {
+          const li = document.createElement("li");
+          li.innerHTML = `<span style="color:blue;">${index + 1}.) 
+          </span><span style="font-weight:bold;">url: </span> 
+          <span>${item.url.slice(8, 20)},,,</span>
+          <span style="font-weight:bold;"> word: </span> 
+          <span>${item.word.slice(0, 10)},,,</span>
+          <span style="font-weight:bold;"> ${
+            item.email ? "email:" : ""
+          } </span> 
+          ${item.email ? `<span>${item.email.slice(0, 10)},,,</span>` : ""}
+          `;
+
+          li.className = "d-flex flex-wrap gap-1";
+          ul.appendChild(li);
+        });
+      }
+
+      container.appendChild(H6);
+      container.appendChild(ul);
+      this.addInputFileName(container);
+      container.appendChild(button);
+      this.downloadContainer.appendChild(container);
+      this.activateDownload();
+    }
+  }
+
+  addInputFileName(parent) {
+    const group = document.createElement("div");
+    const input = document.createElement("input");
+    const label = document.createElement("label");
+    input.className = "form-control";
+    input.name = "fileName";
+    input.value = "";
+    input.className = "rounded text-center form-control";
+    input.style.cssText = "box-shadow:1px 1px 12px 2px white;";
+    input.placeholder = "file name";
+    group.className = "group-control mx-auto text-center my-2";
+    group.style.cssText = "color:white;";
+    label.style.cssText =
+      "text-decoration:underline;text-underline-offset:0.5rem;color:white;font-weight:bold;";
+    label.innerHTML = "enter file name";
+    group.appendChild(label);
+    group.appendChild(input);
+    parent.appendChild(group);
+    input.addEventListener("change", (e) => {
+      if (e) {
+        this.fileName = e.currentTarget.value;
+      }
+    });
+  }
+  activateDownload() {
+    const btnDownLoad = document.querySelector("button#btnDownLoad");
+    btnDownLoad.addEventListener("click", (e) => {
+      if (e) {
+        console.log("get items", this.items, "fileName", this.fileName);
+        this.cleanUp(this.downloadContainer);
+        this.downloadContainer.style.cssText = "";
+        const storeDict = { fileName: this.fileName, items: this.items };
+        const createData = storeDict.items.map((item, index) => {
+          //rows=massItem
+          const massItem = {
+            url: item.url,
+            word: item.word,
+            email: item.email ? item.email : "not submitted",
+          };
+          let mass = "";
+          let mass2 = "";
+          let mass3 = "";
+          if (index === 0) {
+            for (const [key, value] of Object.entries(massItem)) {
+              mass2 += `${key},`;
+            }
+            for (const [key, value] of Object.entries(massItem)) {
+              mass += `${value},`;
+            }
+            return `${mass2.trim()}\n${mass.trim()}\n`;
+          } else {
+            for (const [key, value] of Object.entries(massItem)) {
+              if (value && value.trim() !== "") {
+                mass += `${value.trim().toString()},`;
+              }
+            }
+
+            return `${mass.trim()}\n`;
+          }
+        });
+        const total = storeDict.items.length;
+        const mass3 = `total entries:,${total}\n`;
+        const createDataAdd = createData.join(",") + mass3;
+        const transfer = `data:text/csv;filename=${storeDict.fileName};charset=utf-8,${createDataAdd}`;
+        // console.log(createData);
+        this.doDownload(transfer, storeDict.fileName);
+      }
+    });
+  }
+  doDownload(file, fileName) {
+    if (file) {
+      const encodedUri = encodeURI(file);
+      const a = document.createElement("a");
+      a.href = encodedUri;
+      a.hidden = true;
+      a.download = `${fileName}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      // window.open(encodedUri, fileName);
+    }
+  }
+  cleanUp(parent) {
+    while (parent.firstChild) {
+      parent.removeChild(parent.lastChild);
+    }
+  }
+}
+const start = new FileDownload();
+start.onClickDownload();
+
+class TODOForm {
+  _items = [];
+  _item = {
+    date: "",
+    task: "",
+    details: "",
+    due: "",
+    complete: false,
+  };
+  constructor() {
+    this.todoContainer = document.querySelector("div#todoContainer");
+  }
+  buttonAction() {
+    const button = document.createElement("button");
+    button.id = "addTask";
+    button.className = "btn btn-warning btn-small text-center my-2 mx-auto";
+    button.innerHTML = "add task";
+    this.todoContainer.appendChild(button);
+    button.addEventListener("click", (e) => {
+      if (e) {
+        this.createForm();
+      }
+    });
+  }
+  createForm() {
+    this.todoContainer.style.cssText = "";
+    const button = document.createElement("button");
+    button.id = "taskBtn";
+    button.className = "btn btn-info btn-small text-center my-2 mx-auto";
+    button.innerHTML = "add";
+    this.groupControl(this.todoContainer, "task");
+    this.groupControl(this.todoContainer, "details");
+    this.groupControl(this.todoContainer, "due");
+    this.todoContainer.appendChild(button);
+    button.addEventListener("click", (e) => {
+      if (e) {
+        chrome.storage.sync.get(["todoItems"]).then((res) => {
+          if (res) {
+            this._items = res.todoItems;
+            this._item.date = this.dateConvert(new Date());
+            this._items.push(this._item);
+            console.log(this._item);
+            this.items = this._items;
+            chrome.storage.sync.set({ todoItems: this._items });
+            this.cleanUp(this.todoContainer);
+            this.todoContainer.style.cssText = "";
+          }
+        });
+      }
+    });
+  }
+  groupControl(parent, itemName) {
+    const group = document.createElement("div");
+    group.className =
+      "group-control d-flex flex-column justify-content-center align-items-center gap-2 mx-auto";
+    const label = document.createElement("label");
+    label.style.cssText =
+      "color:black;text-decoration:underline; text-underline-offset:0.5rem;margin-block:1rem;font-size::20px;";
+    label.className = "lean text-primary";
+    label.innerHTML = itemName;
+    let input = document.createElement("input");
+    input.className = "form-control mx-auto";
+    if (itemName === "details") {
+      input = document.createElement("textarea");
+      input.rows = "6";
+      input.cols = "28";
+    }
+    input.name = itemName;
+    if (itemName === "due") {
+      input.type = "date";
+    } else if (itemName !== "details") {
+      input.type = "text";
+    }
+    input.value = "";
+    input.placeholder = itemName;
+    input.style.csstext = "margin-inline:auto;text-align:center;";
+    group.appendChild(label);
+    group.appendChild(input);
+    parent.appendChild(group);
+    input.addEventListener("change", (e) => {
+      this._item = {
+        ...this._item,
+        [e.currentTarget.name]: e.currentTarget.value,
+        complete: false,
+      };
+      console.log(this._item);
+    });
+  }
+  // share
+  cleanUp(parent) {
+    while (parent.firstChild) {
+      parent.removeChild(parent.lastChild);
+    }
+
+    this.buttonAction();
+  }
+  dateConvert(date) {
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+  }
+}
+const startForm = new TODOForm();
+startForm.buttonAction();
+
+//NOT USED
+function getTime(city) {
+  let dateTime = {
+    abbreviation: "",
+    client_ip: "",
+    datetime: "",
+    day_of_week: 0,
+    day_of_year: 0,
+    timezone: "America/Toronto",
+    utc_datetime: "",
+    week_number: 0,
+  };
+  let req = new XMLHttpRequest();
+
+  req.onLoad = () => {
+    //done
+    dateTime = req.response;
+    showTime(req.response);
+  };
+  req.open("GET", `http://worldtimeapi.org/api/timezone/America/${city}`, true);
+  req.send();
+
+  return dateTime;
+}
+
+function showTime(dateTime) {
+  const div = document.createElement("div");
+  div.innerHTML = JSON.stringify(dateTime);
+  document.getElementById("").appendChild(div);
+}
