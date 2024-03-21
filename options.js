@@ -563,7 +563,7 @@ class FileDownload extends TODOGet {
     this.downloadTasksContainer.style.cssText += style_;
     const button = document.createElement("button");
     button.className = btnClass;
-    button.innerHTML = ` <span><img src="./images/verified.svg" style="color:red;margin-left:0.5rem;" alt="arrow"/></span><img src="./images/arrow-down.svg" style="background:black;color:white;margin-left:0.5rem;" alt="arrow"/>`;
+    button.innerHTML = ` <span><img src="./images/verified.svg" style="color:red;margin-left:0.5rem;" alt="arrow"/></span><img src="./images/arrow-down.svg" style="background:white;color:white;margin-left:0.5rem;" alt="arrow"/>`;
     button.id = "btnDownLoad";
     const container = document.createElement("div");
     container.style.cssText = style_container;

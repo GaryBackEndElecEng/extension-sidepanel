@@ -494,7 +494,7 @@ class FileDownload {
       this.downloadContainer.style.cssText =
         "position:relative;top:30%;width:100%;height:auto;z-index:0;";
       container.style.cssText =
-        "position:absolute;top:110%;left:0;background:black;color:white;height:450px;width:100%;padding:1rem;border-radius:inherit;z-index:100;box-shadow:1px 1px 12px 2px lightred;";
+        "position:absolute;top:110%;left:0;background:black;color:white;height:450px;max-width:350px;padding:1rem;border-radius:inherit;z-index:100;box-shadow:1px 1px 12px 2px lightred;";
       container.className =
         "d-flex flex-column justify-content-center align-items-center gap-1";
       button.id = "btnDownLoad";
@@ -505,22 +505,26 @@ class FileDownload {
       const ul = document.createElement("ul");
       ul.className = "mx-auto p-1";
       ul.style.cssText =
-        "background:white;color:black;padding:1;height:300px;overflow-y:scroll;";
+        "background:white;color:black;padding:1;height:300px;overflow-y:scroll;max-width:100%;overflow-x:hidden;";
       if (items && items.length > 0) {
         items.forEach((item, index) => {
+          let modWord = this.shortenWord(item.word);
+          let modUrl = this.shortenUrl(item.url);
           const li = document.createElement("li");
+          li.style.cssText =
+            "max-width:100%;display:flex;flex-wrap:wrap;padding-inline:1rem;";
           li.innerHTML = `<span style="color:blue;">${index + 1}.) 
           </span><span style="font-weight:bold;">url: </span> 
-          <span>${item.url.slice(8, 20)},,,</span>
+          <span>${modUrl},,,</span>
           <span style="font-weight:bold;"> word: </span> 
-          <span>${item.word.slice(0, 10)},,,</span>
+          <span>${modWord},,,</span>
           <span style="font-weight:bold;"> ${
             item.email ? "email:" : ""
           } </span> 
           ${item.email ? `<span>${item.email.slice(0, 10)},,,</span>` : ""}
           `;
 
-          li.className = "d-flex flex-wrap gap-1";
+          li.className = "d-flex flex-wrap gap-1 text-wrap max-w-100";
           ul.appendChild(li);
         });
       }
@@ -562,7 +566,7 @@ class FileDownload {
     const btnDownLoad = document.querySelector("button#btnDownLoad");
     btnDownLoad.addEventListener("click", (e) => {
       if (e) {
-        console.log("get items", this.items, "fileName", this.fileName);
+        // console.log("get items", this.items, "fileName", this.fileName);
         this.cleanUp(this.downloadContainer);
         this.downloadContainer.style.cssText = "";
         const storeDict = { fileName: this.fileName, items: this.items };
@@ -619,6 +623,33 @@ class FileDownload {
   cleanUp(parent) {
     while (parent.firstChild) {
       parent.removeChild(parent.lastChild);
+    }
+  }
+  shortenWord(word) {
+    console.log(word);
+    let wordCheck =
+      word && word.split(" ") && word.split(" ").length > 10 ? true : false;
+    if (wordCheck) {
+      let num = 10;
+      return word.slice(0, num);
+    }
+    return word;
+  }
+  shortenUrl(url) {
+    let check1 = /(https:\/\/)[a-zA-Z0-9]{2,}\.[a-zA-Z]{2,}/g;
+    let urlCheck = url.split("") && url.split(" ").length > 10 ? true : false;
+    if (check1.test(url)) {
+      if (urlCheck) {
+        let num =
+          Math.round(url.split("") / 2) > 16
+            ? Math.round(url.split("") / 3)
+            : 16;
+        return url.slice(10, num);
+      } else {
+        return url;
+      }
+    } else {
+      return " is not a clean https://";
     }
   }
 }
